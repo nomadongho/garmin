@@ -1,0 +1,23 @@
+# Generated binaries and debug artifacts
+bin/
+*.prg
+*.iq
+*.debug.xml
+*.mir
+*.tmp
+.DS_Store
+
+# Local developer signing keys and credentials
+*.der
+*.pem
+*.p12
+*.pfx
+*.key
+*.keystore
+.env
+.env.*
+!.env.example
+
+# Local editor/debug settings (keep extensions.json tracked)
+.vscode/settings.json
+.vscode/launch.json

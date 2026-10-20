@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<iq:manifest xmlns:iq="http://www.garmin.com/xml/connectiq" version="3">
+  <iq:application
+      id="a418ec8f3ba04c3ba49d0aa4e4b3ac42"
+      type="watchface"
+      name="@Strings.AppName"
+      entry="StarterFaceApp"
+      minApiLevel="3.4.0">
+    <iq:products>
+      <iq:product id="fr55"/>
+    </iq:products>
+    <iq:permissions/>
+    <iq:languages>
+      <iq:language>eng</iq:language>
+    </iq:languages>
+    <iq:barrels/>
+  </iq:application>
+</iq:manifest>
