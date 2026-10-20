@@ -2,6 +2,7 @@
 """SDK-free project checks, NOT a Monkey C compiler or simulator."""
 from pathlib import Path
 import re
+import struct
 import sys
 import xml.etree.ElementTree as ET
 
@@ -25,6 +26,19 @@ def main() -> int:
     assert strings.find(".//string[@id='AppName']") is not None, "Missing AppName"
     assert app.get("name") == "@Strings.AppName", "Bad app resource"
 
+    # SDK 9.2 fails an app build without a launcher icon. Verify both the
+    # manifest reference and the bitmap it resolves to.
+    assert app.get("launcherIcon") == "@Drawables.LauncherIcon", "Missing launcher icon"
+    drawables_dir = ROOT / "resources/drawables"
+    drawables = ET.parse(drawables_dir / "drawables.xml")
+    launcher = drawables.find(".//bitmap[@id='LauncherIcon']")
+    assert launcher is not None, "Missing launcher bitmap definition"
+    filename = launcher.get("filename")
+    assert filename == "launcher_icon.png", "Wrong launcher icon resource path"
+    icon = (drawables_dir / filename).read_bytes()
+    assert icon[:8] == b"\x89PNG\r\n\x1a\n", "Launcher icon is not PNG"
+    assert struct.unpack(">II", icon[16:24]) == (40, 40), "Launcher icon should be 40x40"
+
     jungle = (ROOT / "monkey.jungle").read_text()
     for expected in ("project.manifest = manifest.xml",
                      "base.sourcePath = source",
@@ -37,7 +51,7 @@ def main() -> int:
     assert "return [new StarterFaceView()]" in app_source
     assert "class StarterFaceView extends WatchUi.WatchFace" in face_source
     assert "function onUpdate(dc)" in face_source
-    print("Project XML, target device, source and build configuration: OK")
+    print("Project XML, launcher icon, target device, source and build configuration: OK")
     print("Note: Monkey C compilation and device tests were NOT run.")
     return 0
 

@@ -4,6 +4,7 @@
       id="a418ec8f3ba04c3ba49d0aa4e4b3ac42"
       type="watchface"
       name="@Strings.AppName"
+      launcherIcon="@Drawables.LauncherIcon"
       entry="StarterFaceApp"
       minApiLevel="3.4.0">
     <iq:products>
