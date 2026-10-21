@@ -69,20 +69,24 @@ class StarterFaceView extends WatchUi.WatchFace {
 
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
-        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
-        // Compact 208 x 208 round layout: keep the date close to the time.
-        // The large clock stays centered for both one- and two-digit hours.
-        dc.drawText(cx, 44, Graphics.FONT_SMALL, dateLabel,
+        // Built-in number fonts have generous empty space above their glyphs.
+        // An opaque text background would erase the lower half of the date
+        // when the clock is drawn afterward. Keep glyph backgrounds transparent.
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
+
+        // Compact 208 x 208 round layout. The date sits just above the
+        // visible digits, without being masked by the number font's line box.
+        dc.drawText(cx, 49, Graphics.FONT_SMALL, dateLabel,
                     Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(cx, 55, Graphics.FONT_NUMBER_HOT, timeLabel,
+        dc.drawText(cx, 58, Graphics.FONT_NUMBER_HOT, timeLabel,
                     Graphics.TEXT_JUSTIFY_CENTER);
 
-        // Right-align AM/PM with the end of the actual time string, instead
-        // of placing it underneath the center of the clock.
+        // Align AM/PM to the right edge of the actual time (8:31 / 12:59),
+        // close to the number baseline but clear of the bottom readouts.
         var timeRight = cx +
                         dc.getTextWidthInPixels(timeLabel, Graphics.FONT_NUMBER_HOT) / 2;
-        dc.drawText(timeRight, 132, Graphics.FONT_XTINY, amPm,
+        dc.drawText(timeRight, 130, Graphics.FONT_XTINY, amPm,
                     Graphics.TEXT_JUSTIFY_RIGHT);
 
         // At the bottom of a round screen, usable width narrows quickly.
