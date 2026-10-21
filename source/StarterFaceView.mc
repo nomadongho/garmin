@@ -71,18 +71,25 @@ class StarterFaceView extends WatchUi.WatchFace {
         dc.clear();
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_BLACK);
 
-        // Minimal 208 x 208 round layout. Prioritize the central time.
-        dc.drawText(cx, 39, Graphics.FONT_SMALL, dateLabel,
+        // Compact 208 x 208 round layout: keep the date close to the time.
+        // The large clock stays centered for both one- and two-digit hours.
+        dc.drawText(cx, 44, Graphics.FONT_SMALL, dateLabel,
                     Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(cx, 71, Graphics.FONT_NUMBER_HOT, timeLabel,
-                    Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(cx, 143, Graphics.FONT_XTINY, amPm,
+        dc.drawText(cx, 55, Graphics.FONT_NUMBER_HOT, timeLabel,
                     Graphics.TEXT_JUSTIFY_CENTER);
 
-        // Two compact readouts remain within the round screen's lower area.
-        dc.drawText(61, 169, Graphics.FONT_XTINY, batteryLabel,
-                    Graphics.TEXT_JUSTIFY_CENTER);
-        dc.drawText(147, 169, Graphics.FONT_XTINY, heartRateLabel,
-                    Graphics.TEXT_JUSTIFY_CENTER);
+        // Right-align AM/PM with the end of the actual time string, instead
+        // of placing it underneath the center of the clock.
+        var timeRight = cx +
+                        dc.getTextWidthInPixels(timeLabel, Graphics.FONT_NUMBER_HOT) / 2;
+        dc.drawText(timeRight, 132, Graphics.FONT_XTINY, amPm,
+                    Graphics.TEXT_JUSTIFY_RIGHT);
+
+        // At the bottom of a round screen, usable width narrows quickly.
+        // Move the readouts up and anchor their outer edges inside the circle.
+        dc.drawText(31, 155, Graphics.FONT_XTINY, batteryLabel,
+                    Graphics.TEXT_JUSTIFY_LEFT);
+        dc.drawText(dc.getWidth() - 31, 155, Graphics.FONT_XTINY, heartRateLabel,
+                    Graphics.TEXT_JUSTIFY_RIGHT);
     }
 }
