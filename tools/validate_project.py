@@ -51,6 +51,19 @@ def main() -> int:
     assert "return [new StarterFaceView()]" in app_source
     assert "class StarterFaceView extends WatchUi.WatchFace" in face_source
     assert "function onUpdate(dc)" in face_source
+
+    # Static regression guard for the compact AM/PM color convention.
+    # This does not replace compiling or rendering in the Connect IQ SDK.
+    assert "clock.hour % 12" in face_source, "12-hour display must be preserved"
+    assert re.search(
+        r"var timeColor = \\(clock\\.hour >= 12\\) \\?\\s+"
+        r"Graphics\\.COLOR_YELLOW : Graphics\\.COLOR_WHITE;",
+        face_source,
+    ), "Time should turn yellow at noon and stay white before noon"
+    assert "dc.setColor(timeColor, Graphics.COLOR_TRANSPARENT);" in face_source, (
+        "Time color should be applied to the foreground only"
+    )
+    assert "amPm" not in face_source, "AM/PM label should not take up screen space"
     print("Project XML, launcher icon, target device, source and build configuration: OK")
     print("Note: Monkey C compilation and device tests were NOT run.")
     return 0
