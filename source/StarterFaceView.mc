@@ -51,7 +51,6 @@ class StarterFaceView extends WatchUi.WatchFace {
         if (hour == 0) {
             hour = 12;
         }
-        var amPm = (clock.hour >= 12) ? "PM" : "AM";
         var timeLabel = hour.format("%d") + ":" + clock.min.format("%02d");
 
         // The user needs the weekday, day, and month, not the year.
@@ -70,24 +69,24 @@ class StarterFaceView extends WatchUi.WatchFace {
         dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
         dc.clear();
 
-        // Built-in number fonts have generous empty space above their glyphs.
-        // An opaque text background would erase the lower half of the date
-        // when the clock is drawn afterward. Keep glyph backgrounds transparent.
+        // Keep glyph backgrounds transparent so the time font's line box
+        // cannot cover the date above it.
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
-        // Compact 208 x 208 round layout. The date sits just above the
-        // visible digits, without being masked by the number font's line box.
+        // Compact 208 x 208 round layout. Keep the date and readouts white.
         dc.drawText(cx, 49, Graphics.FONT_SMALL, dateLabel,
                     Graphics.TEXT_JUSTIFY_CENTER);
+
+        // 12-hour clock: white before noon, yellow from 12:00 to 23:59.
+        // Convey AM/PM with color instead of taking up space with a label.
+        var timeColor = (clock.hour >= 12) ?
+                        Graphics.COLOR_YELLOW : Graphics.COLOR_WHITE;
+        dc.setColor(timeColor, Graphics.COLOR_TRANSPARENT);
         dc.drawText(cx, 58, Graphics.FONT_NUMBER_HOT, timeLabel,
                     Graphics.TEXT_JUSTIFY_CENTER);
 
-        // Align AM/PM to the right edge of the actual time (8:31 / 12:59),
-        // close to the number baseline but clear of the bottom readouts.
-        var timeRight = cx +
-                        dc.getTextWidthInPixels(timeLabel, Graphics.FONT_NUMBER_HOT) / 2;
-        dc.drawText(timeRight, 130, Graphics.FONT_XTINY, amPm,
-                    Graphics.TEXT_JUSTIFY_RIGHT);
+        // Only the time changes color; battery and heart rate stay white.
+        dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
         // At the bottom of a round screen, usable width narrows quickly.
         // Move the readouts up and anchor their outer edges inside the circle.
