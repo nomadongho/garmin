@@ -56,8 +56,8 @@ def main() -> int:
     # This does not replace compiling or rendering in the Connect IQ SDK.
     assert "clock.hour % 12" in face_source, "12-hour display must be preserved"
     assert re.search(
-        r"var timeColor = \\(clock\\.hour >= 12\\) \\?\\s+"
-        r"Graphics\\.COLOR_YELLOW : Graphics\\.COLOR_WHITE;",
+        r"var timeColor = \(clock\.hour >= 12\) \?\s+"
+        r"Graphics\.COLOR_YELLOW : Graphics\.COLOR_WHITE;",
         face_source,
     ), "Time should turn yellow at noon and stay white before noon"
     assert "dc.setColor(timeColor, Graphics.COLOR_TRANSPARENT);" in face_source, (
